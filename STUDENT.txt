@@ -1,3 +1,5 @@
 APP_URL= 'https://story-api.dicoding.dev/v1'
 
 MAP_SERVICE_API_KEY= 'pewMnjSomgX7YlWsWD5a'
+
+https://urstoryv2-hpug.vercel.app
