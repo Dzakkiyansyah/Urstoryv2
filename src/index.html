@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Ceritain App - Ayo bagikan cerita anda."
+    />
+    <meta name="theme-color" content="#7F56D9" />
+    <meta name="view-transition" content="same-origin" />
+    <link rel="shortcut icon" href="favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Quicksand:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="manifest" href="manifest.json" />
+    <title>Urstory</title>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="container header__container">
+        <a href="#/" class="app-brand">
+          <img src="images/logo.png" alt="Logo Ceritakan" class="app-brand__logo" />
+          <span class="app-brand__name">Urstory</span>
+        </a>
+        
+        <button id="skip-link" class="skip-link">Lewati ke Konten</button>
+
+        <button class="nav-toggler" id="navToggler" aria-label="Toggle navigation" aria-expanded="false" aria-controls="appNavigationMenu">
+          <i class="fas fa-bars icon-menu"></i>
+          <i class="fas fa-times icon-close"></i>
+        </button>
+
+        <nav class="app-nav" id="appNavigationMenu">
+          <ul class="app-nav__list app-nav__list--primary">
+          </ul>
+          <ul class="app-nav__list app-nav__list--secondary">
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main tabIndex="-1" id="main-content" class="main-content"></main>
+    
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <p class="copyright">&copy; 2025 Dzakkiyansyah. Hak Cipta Dilindungi.</p>
+      </div>
+    </footer>
+  </body>
+</html>

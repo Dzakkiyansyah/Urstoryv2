@@ -1,0 +1,262 @@
+/* Keyframes untuk view transition */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes slide-to-left-short {
+  to {
+    transform: translateX(-20px);
+  }
+}
+@keyframes slide-from-right-short {
+  from {
+    transform: translateX(20px);
+  }
+}
+
+/* --- Mobile (Default, gaya dasar ada di styles.css) --- */
+@media screen and (max-width: 600px) {
+  .container {
+    padding-inline: 15px;
+  }
+  .main-content .section-title {
+    font-size: 1.6rem;
+  }
+  .story-item__body {
+    padding: 16px;
+  }
+  .app-brand__name {
+    font-size: 1.3rem;
+  }
+  .app-nav {
+    width: 280px;
+  }
+  .new-form {
+    padding: 20px;
+  }
+  .story-detail__body {
+    padding: 20px;
+  }
+  .register-form,
+  .login-form {
+    padding: 24px;
+  }
+  .not-found-page__title {
+    font-size: 2rem;
+  }
+  .not-found-page__message {
+    font-size: 1rem;
+  }
+  .new-form__photo-upload-options {
+    flex-direction: column;
+  }
+  .new-form__photo-upload-options .btn {
+    width: 100%;
+  }
+  .new-form__location__lat-lng {
+    flex-direction: column;
+  }
+  .form-control-inline {
+    min-width: 100%;
+  }
+}
+
+/* --- Tablet dan Layar Lebih Besar --- */
+@media screen and (min-width: 768px) {
+  .nav-toggler {
+    display: flex;
+  }
+
+  form .form-buttons {
+    flex-direction: row;
+    align-items: center;
+  }
+  .new-form__action-buttons {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+  .new-form__photo-upload-options {
+    flex-direction: row;
+  }
+  .new-form__photo-upload-options .btn {
+    width: auto;
+  }
+  .new-form__location__lat-lng {
+    flex-direction: row;
+  }
+
+  .stories-list {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+  .new-form__documentations__outputs {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  }
+
+  .stories-list__map__container,
+  .stories-list__map {
+    height: 380px;
+  }
+
+  .story-detail__images {
+    max-height: 500px;
+  }
+}
+
+/* --- Desktop (Navbar horizontal penuh dan penyesuaian layout lainnya) --- */
+@media screen and (min-width: 1024px) {
+  .container {
+    padding-inline: 24px;
+  }
+
+  .nav-toggler {
+    display: none;
+  }
+
+  .header__container {
+    /* display: flex; justify-content: space-between; align-items: center; (sudah ada di styles.css) */
+  }
+
+  .app-brand {
+    /* Gaya brand sudah di styles.css */
+  }
+  .app-brand__name,
+  .app-brand i {
+    /* Untuk ikon jika ada di brand */
+    color: var(--header-dark-text);
+  }
+  .app-brand:hover .app-brand__name,
+  .app-brand:hover i {
+    color: var(--accent-light-purple);
+  }
+
+  .app-nav {
+    position: static;
+    transform: translateX(0);
+    background-color: transparent;
+    box-shadow: none;
+    padding: 0;
+    width: auto;
+    height: 100%;
+    flex-direction: row;
+    align-items: center;
+    /* margin-left: auto; Dihapus agar .app-nav tidak langsung ke paling kanan jika hanya ada primary list */
+    /* flex-grow: 1; Dihapus agar kita bisa kontrol spacing antar primary dan secondary list */
+    display: flex; /* Pastikan .app-nav adalah flex container */
+    justify-content: flex-end; /* Mendorong semua isinya ke kanan, lalu kita atur jarak antar list */
+    flex: 1; /* Biarkan .app-nav mengambil sisa ruang setelah brand */
+    overflow-y: visible;
+  }
+
+  .app-nav__list {
+    flex-direction: row;
+    height: 100%;
+    align-items: center;
+    margin: 0; /* Reset margin */
+    padding: 0; /* Reset padding */
+    border-top: none; /* Reset border dari mobile */
+  }
+
+  .app-nav__list--primary {
+    gap: 8px; /* Jarak antar item "Beranda" jika ada item lain */
+    margin-right: auto; /* Mendorong .app-nav__list--secondary ke kanan */
+  }
+
+  .app-nav__list--secondary {
+    gap: 12px;
+  }
+
+  /* Styling link di header gelap (desktop) */
+  .app-nav__link,
+  .app-nav__list--secondary .btn {
+    /* Terapkan tinggi yang sama untuk konsistensi */
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    height: auto; /* Biarkan konten menentukan tinggi, padding akan memberi ruang */
+    display: inline-flex; /* Agar align-items bekerja */
+    align-items: center;
+    border-radius: 6px;
+    transition: color 0.2s ease, background-color 0.2s ease,
+      border-bottom-color 0.2s ease;
+  }
+
+  .app-nav__link {
+    color: var(--header-dark-text);
+    border-bottom: 3px solid transparent;
+  }
+
+  .app-nav__link:hover,
+  .app-nav__link:focus {
+    background-color: var(--header-dark-link-hover-bg);
+    color: var(--accent-primary-text-color);
+    border-bottom-color: transparent;
+  }
+
+  .app-nav__list--primary .app-nav__link.active {
+    background-color: transparent;
+    color: var(--accent-primary-color);
+    font-weight: 700;
+    border-bottom-color: var(--accent-primary-color);
+  }
+
+  /* Tombol aksi di navbar desktop */
+  .app-nav__list--secondary .btn {
+    padding: 8px 20px; /* Bisa sedikit berbeda dari link jika diinginkan */
+    font-size: 0.9rem;
+  }
+  .app-nav__list--secondary .app-nav__link.btn, /* Untuk kasus jika link diberi kelas btn */
+  .app-nav__list--secondary > li > .btn {
+    /* Untuk kasus jika tombol langsung di li */
+    border-bottom-color: transparent !important;
+  }
+  .app-nav__list--secondary .app-nav__link.btn:hover,
+  .app-nav__list--secondary > li > .btn:hover {
+    border-bottom-color: transparent !important;
+  }
+  .app-nav__list--secondary > li > .app-nav__link {
+    /* Untuk link biasa seperti "Masuk" */
+    color: var(--header-dark-text);
+  }
+  .app-nav__list--secondary > li > .app-nav__link:hover {
+    background-color: var(--header-dark-link-hover-bg);
+    color: var(--accent-primary-text-color);
+  }
+
+  /* Penyesuaian lain untuk desktop */
+  .stories-list__map__container,
+  .stories-list__map {
+    height: 400px;
+  }
+
+  .story-detail__images {
+    max-height: 500px;
+  }
+
+  .stories-list {
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  }
+
+  /* FOOTER */
+  .footer-content {
+    justify-content: space-between;
+  }
+}
+
+/* --- View Transitions untuk Tablet ke Atas --- */
+@media screen and (min-width: 768px) {
+  ::view-transition-old(root):not(:only-child) {
+    animation: fade-out 180ms cubic-bezier(0.4, 0, 1, 1) both,
+      slide-to-left-short 350ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
+  ::view-transition-new(root):not(:only-child) {
+    animation: fade-in 280ms cubic-bezier(0, 0, 0.2, 1) 120ms both,
+      slide-from-right-short 350ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+}
