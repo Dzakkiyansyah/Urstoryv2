@@ -14,8 +14,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     appNavigationMenu: document.getElementById('appNavigationMenu'),
     skipLinkButton: document.getElementById('skip-link'),
   });
+
   window.addEventListener('load', () => {
-    app.renderPage();
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker: Pendaftaran berhasil. Scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker: Pendaftaran gagal:', error);
+        });
+    }
 
     // Inisialisasi Push Notification setelah halaman dimuat
     PushNotification.init({
@@ -23,6 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         'BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlvPoJJqxbk',
     });
   });
+  
   await app.renderPage();
 
   window.addEventListener('hashchange', async () => {

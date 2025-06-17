@@ -9,6 +9,7 @@ module.exports = {
   output: {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    clean: true,
   },
   module: {
     rules: [
@@ -21,11 +22,17 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src/index.html'),
+      filename: 'index.html',
     }),
+
     new CopyWebpackPlugin({
       patterns: [
         {
           from: path.resolve(__dirname, 'src/public/'),
+          to: path.resolve(__dirname, 'dist/'),
+        },
+        {
+          from: path.resolve(__dirname, 'src/service-worker.js'),
           to: path.resolve(__dirname, 'dist/'),
         },
       ],

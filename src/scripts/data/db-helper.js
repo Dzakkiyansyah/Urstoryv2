@@ -14,7 +14,16 @@ const StoriesDb = {
   async getAllStories() {
     console.log('Mengambil semua stories dari IndexedDB');
     return (await dbPromise).getAll(OBJECT_STORE_NAME);
-  },
+  }, 
+
+  async putStory(story) {
+    if (!story || !story.id) {
+      console.error('Data story tidak valid, tidak bisa disimpan:', story);
+      return;
+    }
+    console.log('Menyimpan satu story ke IndexedDB:', story.id);
+    return (await dbPromise).put(OBJECT_STORE_NAME, story);
+  }, 
 
   async putAllStories(stories) {
     if (!stories || !Array.isArray(stories)) {
@@ -22,7 +31,7 @@ const StoriesDb = {
       return;
     }
     
-    console.log('Menyimpan stories ke IndexedDB');
+    console.log('Menyimpan semua stories ke IndexedDB');
     const tx = (await dbPromise).transaction(OBJECT_STORE_NAME, 'readwrite');
     await Promise.all(stories.map((story) => tx.store.put(story)));
     await tx.done;

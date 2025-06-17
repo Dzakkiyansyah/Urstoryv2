@@ -1,4 +1,5 @@
 import * as DicodingStoryAPI from '../../data/api';
+import StoriesDb from '../../data/db-helper';
 import {
   generateLoaderAbsoluteTemplate,
   generateStoriesItemTemplate,
@@ -11,6 +12,7 @@ import HomePresenter from './home-presenter';
 export default class HomePage {
   #presenter = null;
   #map = null;
+  #stories = [];
 
   async render() {
     return `
@@ -37,11 +39,39 @@ export default class HomePage {
       view: this,
       model: DicodingStoryAPI,
     });
+    
+    
+    this.#setupSaveButtonListeners();
+  }
 
-    await this.#presenter.initialGalleryAndMap();
+  #setupSaveButtonListeners() {
+    const storiesListElement = document.getElementById('stories-list');
+    storiesListElement.addEventListener('click', async (event) => {
+      if (event.target.classList.contains('save-button')) {
+        event.preventDefault();
+        const button = event.target;
+        const storyId = button.dataset.id;
+        
+        const storyToSave = this.#stories.find((story) => story.id === storyId);
+
+        if (storyToSave) {
+          try {
+            await StoriesDb.putStory(storyToSave);
+            console.log(`Story ${storyId} berhasil disimpan.`);
+            button.innerHTML = '<i class="fas fa-check"></i> Tersimpan';
+            button.disabled = true;
+          } catch (error) {
+            console.error(`Gagal menyimpan story ${storyId}:`, error);
+            alert('Gagal menyimpan cerita. Silakan coba lagi.');
+          }
+        }
+      }
+    });
   }
 
   listStory(message, stories) {
+    this.#stories = stories;
+
     const storiesListElement = document.getElementById('stories-list');
     if (!storiesListElement) {
       console.error('Element #stories-list tidak ditemukan.');

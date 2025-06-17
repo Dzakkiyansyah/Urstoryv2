@@ -1,42 +1,26 @@
-import StoriesDb from '../../data/db-helper.js'; 
+import StoriesDb from '../../data/db-helper.js';
 
 export default class HomePresenter {
   #view;
   #model;
+  #stories = []; 
 
   constructor({ view, model }) {
     this.#view = view;
     this.#model = model;
 
-    // Panggil fungsi utama saat presenter diinisialisasi
     this.#initialGalleryAndMap();
+  }
+
+  get stories() {
+    return this.#stories;
   }
 
   async #initialGalleryAndMap() {
     this.#view.showLoading();
-    await this.#showStoriesListMap(); 
-    await this.#displayStoriesFromDb();
+    await this.#showStoriesListMap();
+    await this.#displayStoriesFromDb(); 
 
-    // mbil data dari API dan simpan ke IndexedDB
-    await this.#fetchAndCacheStoriesFromApi();
-    
-    this.#view.hideLoading();
-  }
-  
-  async #displayStoriesFromDb() {
-    try {
-      const stories = await StoriesDb.getAllStories();
-      if (stories && stories.length > 0) {
-        console.log('Menampilkan stories dari database');
-        this.#view.listStory('Data dari Cache', stories);
-      }
-    } catch (error) {
-      console.error('Gagal menampilkan data dari DB:', error);
-      // Jika gagal mengambil dari DB, tidak apa-apa, kita akan coba dari API
-    }
-  }
-  
-  async #fetchAndCacheStoriesFromApi() {
     try {
       console.log('Mengambil stories dari API');
       const response = await this.#model.getAllStories();
@@ -45,20 +29,31 @@ export default class HomePresenter {
         throw new Error(response.message || 'Gagal mengambil data cerita dari API.');
       }
       
-      console.log('Menyimpan stories dari API ke database');
-      // Simpan data baru ke IndexedDB
-      await StoriesDb.putAllStories(response.listStory);
-      
-      // Tampilkan data terbaru dari API ke view
-      this.#view.listStory(response.message, response.listStory);
+      this.#stories = response.listStory;
+  
+      this.#view.listStory(response.message, this.#stories);
 
     } catch (error) {
       console.error('initialGalleryAndMap: caught exception:', error);
-      // Hanya tampilkan error jika tidak ada data sama sekali dari DB
       const storiesFromDb = await StoriesDb.getAllStories();
       if (!storiesFromDb || storiesFromDb.length === 0) {
         this.#view.listStoryError(error.message || 'Terjadi kesalahan tidak terduga.');
       }
+    } finally {
+      this.#view.hideLoading();
+    }
+  }
+
+  async #displayStoriesFromDb() {
+    try {
+      const stories = await StoriesDb.getAllStories();
+      if (stories && stories.length > 0) {
+        console.log('Menampilkan stories dari database');
+        this.#stories = stories; 
+        this.#view.listStory('Data dari Cache', stories);
+      }
+    } catch (error) {
+      console.error('Gagal menampilkan data dari DB:', error);
     }
   }
 

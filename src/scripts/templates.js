@@ -116,6 +116,9 @@ export function generateStoriesItemTemplate({
           <a class="btn btn-light story-item__read-more" href="#/stories/${id}">
             Baca Selengkapnya <i class="fas fa-arrow-right"></i>
           </a>
+          <button class="btn btn-secondary save-button" data-id="${id}" aria-label="Simpan cerita dari ${name} untuk dibaca offline">
+            <i class="fas fa-save"></i> Simpan Offline
+          </button>
         </div>
       </div>
     </div>
