@@ -1,13 +1,13 @@
-import * as DicodingStoryAPI from '../../data/api';
-import StoriesDb from '../../data/db-helper';
+import * as DicodingStoryAPI from "../../data/api";
+import StoriesDb from "../../data/db-helper";
 import {
   generateLoaderAbsoluteTemplate,
   generateStoriesItemTemplate,
   generateStoriesListEmptyTemplate,
   generateStoriesListErrorTemplate,
-} from '../../templates';
-import Map from '../../utils/map.js';
-import HomePresenter from './home-presenter';
+} from "../../templates";
+import Map from "../../utils/map.js";
+import HomePresenter from "./home-presenter";
 
 export default class HomePage {
   #presenter = null;
@@ -27,7 +27,7 @@ export default class HomePage {
         <h1 class="section-title">Jelajahi Cerita Terbaru</h1>
 
         <div class="stories-list__container">
-          <div id="stories-list" class="stories-list"></div> 
+          <div id="stories-list" class="stories-list"></div>
           <div id="stories-list-loading-container"></div>
         </div>
       </section>
@@ -39,42 +39,37 @@ export default class HomePage {
       view: this,
       model: DicodingStoryAPI,
     });
-    
-    
+
     this.#setupSaveButtonListeners();
   }
 
   #setupSaveButtonListeners() {
-    const storiesListElement = document.getElementById('stories-list');
-    storiesListElement.addEventListener('click', async (event) => {
-      if (event.target.classList.contains('save-button')) {
+    const storiesListElement = document.getElementById("stories-list");
+    storiesListElement.addEventListener("click", async (event) => {
+      const saveButton = event.target.closest(".save-button");
+      if (saveButton) {
         event.preventDefault();
-        const button = event.target;
-        const storyId = button.dataset.id;
-        
+        const storyId = saveButton.dataset.id;
         const storyToSave = this.#stories.find((story) => story.id === storyId);
 
         if (storyToSave) {
           try {
             await StoriesDb.putStory(storyToSave);
-            console.log(`Story ${storyId} berhasil disimpan.`);
-            button.innerHTML = '<i class="fas fa-check"></i> Tersimpan';
-            button.disabled = true;
+            saveButton.innerHTML = '<i class="fas fa-check"></i> Tersimpan';
+            saveButton.disabled = true;
           } catch (error) {
             console.error(`Gagal menyimpan story ${storyId}:`, error);
-            alert('Gagal menyimpan cerita. Silakan coba lagi.');
+            alert("Gagal menyimpan cerita. Silakan coba lagi.");
           }
         }
       }
     });
   }
 
-  listStory(message, stories) {
+  async listStory(message, stories) {
     this.#stories = stories;
-
-    const storiesListElement = document.getElementById('stories-list');
+    const storiesListElement = document.getElementById("stories-list");
     if (!storiesListElement) {
-      console.error('Element #stories-list tidak ditemukan.');
       return;
     }
 
@@ -83,38 +78,40 @@ export default class HomePage {
       return;
     }
 
-    let html = '';
-    stories.forEach((story) => {
-      if (story.lat != null && story.lon != null && this.#map) {
-        const coordinate = [parseFloat(story.lat), parseFloat(story.lon)];
-        this.#map.addMarker(
-          coordinate,
-          { alt: `Marker untuk cerita oleh ${story.name}` },
-          {
-            content: `<h5>Cerita oleh ${
-              story.name
-            }</h5><p>${story.description.substring(
-              0,
-              50
-            )}...</p><p><a href="#/stories/${story.id}">Lihat detail</a></p>`,
-          }
-        );
-      }
-      html += generateStoriesItemTemplate(story);
-    });
+    const storiesHtml = await Promise.all(
+      stories.map(async (story) => {
+        const isSaved = await StoriesDb.getStory(story.id);
+        if (story.lat != null && story.lon != null && this.#map) {
+          const coordinate = [parseFloat(story.lat), parseFloat(story.lon)];
+          this.#map.addMarker(
+            coordinate,
+            { alt: `Marker untuk cerita oleh ${story.name}` },
+            {
+              content: `<h5>Cerita oleh ${
+                story.name
+              }</h5><p>${story.description.substring(
+                0,
+                50
+              )}...</p><p><a href="#/stories/${story.id}">Lihat detail</a></p>`,
+            }
+          );
+        }
+        return generateStoriesItemTemplate({ ...story, isSaved: !!isSaved });
+      })
+    );
 
-    storiesListElement.innerHTML = html;
+    storiesListElement.innerHTML = storiesHtml.join("");
   }
 
   listStoryEmpty() {
-    const storiesListElement = document.getElementById('stories-list');
+    const storiesListElement = document.getElementById("stories-list");
     if (storiesListElement) {
       storiesListElement.innerHTML = generateStoriesListEmptyTemplate();
     }
   }
 
   listStoryError(message) {
-    const storiesListElement = document.getElementById('stories-list');
+    const storiesListElement = document.getElementById("stories-list");
     if (storiesListElement) {
       storiesListElement.innerHTML = generateStoriesListErrorTemplate(message);
     }
@@ -123,23 +120,21 @@ export default class HomePage {
   async initialMap() {
     if (this.#map) return;
 
-    const mapElement = document.getElementById('map');
+    const mapElement = document.getElementById("map");
     if (!mapElement) {
-      console.error('Elemen #map tidak ditemukan untuk peta home.');
       this.hideMapLoading();
       return;
     }
 
     this.showMapLoading();
     try {
-      this.#map = await Map.build('#map', {
+      this.#map = await Map.build("#map", {
         center: [-2.548926, 118.0148634],
         zoom: 5,
       });
     } catch (error) {
-      console.error('Gagal menginisialisasi peta:', error);
       const mapLoadingContainer = document.getElementById(
-        'map-loading-container'
+        "map-loading-container"
       );
       if (mapLoadingContainer) {
         mapLoadingContainer.innerHTML = `<p class="text-error" style="text-align: center; padding: 20px;">Peta tidak dapat dimuat.</p>`;
@@ -151,7 +146,7 @@ export default class HomePage {
 
   showMapLoading() {
     const mapLoadingContainer = document.getElementById(
-      'map-loading-container'
+      "map-loading-container"
     );
     if (mapLoadingContainer) {
       mapLoadingContainer.innerHTML = generateLoaderAbsoluteTemplate();
@@ -160,16 +155,16 @@ export default class HomePage {
 
   hideMapLoading() {
     const mapLoadingContainer = document.getElementById(
-      'map-loading-container'
+      "map-loading-container"
     );
     if (mapLoadingContainer) {
-      mapLoadingContainer.innerHTML = '';
+      mapLoadingContainer.innerHTML = "";
     }
   }
 
   showLoading() {
     const storiesListLoadingContainer = document.getElementById(
-      'stories-list-loading-container'
+      "stories-list-loading-container"
     );
     if (storiesListLoadingContainer) {
       storiesListLoadingContainer.innerHTML = generateLoaderAbsoluteTemplate();
@@ -178,10 +173,10 @@ export default class HomePage {
 
   hideLoading() {
     const storiesListLoadingContainer = document.getElementById(
-      'stories-list-loading-container'
+      "stories-list-loading-container"
     );
     if (storiesListLoadingContainer) {
-      storiesListLoadingContainer.innerHTML = '';
+      storiesListLoadingContainer.innerHTML = "";
     }
   }
 }
